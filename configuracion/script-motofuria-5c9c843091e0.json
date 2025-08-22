@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "script-motofuria",
+  "private_key_id": "5c9c843091e01ea7833cc6e3cff4d5f2b434e277",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDQcb5saNTKCK3K\nBNA+8nALqwBtQHBMfbqCFg8FoNbebT1qwf3LPjKlzozvzV/eerWjBLLNl2itQkD+\nmfqLqDp+zfBEEV5XqnvEJol9jWbN2N7+H0yQlFNQ6jjheVX1cYzAHRxKjQoDCcPM\nuWdywUKgBG7soA2xhg7XCvgkC9GM5eQgs65fITj3Z/1zKXj0JmzGMIs7a1NuTsyX\nEI3A3L0UrJUxrOJa0+PuQXf3sUpLv5I6wQYAN6uzYpzjLc6WQ9LceFr5ePKl293L\nu98O7buTqtFHjWij8HdlyPiZYbh57Zp1sKqMIcAB88uIlVPp1xRK7nNIYs1LuKQn\n8evBZRw/AgMBAAECggEABsxm6w9CPXKqBGhCyILMv7ysj2OmJgCFyD9i7wqPZ4LF\nmYlJN0tIiJrjguC+azmyWeZJ1KXHDruV9hfckZiDi+Y4m2e7nX1cewnMuzEU9MrJ\nfx1TOHX1/7Ib99KmyJITBqMMbKwL8wxq++7iHl6KR0DNw173A169disP69EM3R0F\nR5t6RimNqUVn5EPKOkLbSdNGpd7VeZ0YIUgJaIT04S1C6icPQPSJtD9Fyh52AALq\nXuhMAsoPzmqj/T3GDy69fxI41yYVHOKYE4+b+4vm/t9ljaZEIWFVetVEgGLRFOZX\nUSDs8O/bGSMiJbSRahG2HiTSZf7AxNmcs4rAnVY/sQKBgQD4VhZEbzhVrtpwwwur\n7SbVMjcIT52n6UAq89qukB9dWKrpnJ/kSxnF/qND49EqVc07cZcMjuWGQC36d6r0\n1nctJrLOsQsc+QMz0aEquc8+PLhuK1oPbWPehCdUK4R/MFVRAFl8yOw2p6bZnfav\ndyJ+Hbsqw8iKNP/rJIsBlZaMLwKBgQDW4IBTKjJTWHlKIzCa5iwjn2eUY7EBKKY5\n4AgZNdiSrcwftKwNkcIP8vlmocSvJPcGJQEk2PhAGb8nu9e6ji4s438ELyrp+rq6\nIHeT6sfVdFy/kGUykiyua1UxBCHp20ywR/rkAMsPboNni8yO7wHu4XScUPcb6bQq\nWno8+ooc8QKBgQCKbdJzy1unx5RUjyUObV/cL+WlaFwFoWv3hX89F3GkYyzClGA8\nrfBsAgmYaoHKC5IftK3yfiVLtLLsj5BocrR0IsJBnUcIm3ZBiHVCj9kKZGaaYugM\n+XlWLGyP6sIs9BBa2ssHWCj0PngvjnJYVRyRGJmguQosoGaX+QLTm0MUWQKBgEz9\nn70sr1+BoePYe//kXQheg0R9+9wIbpbqGLy/uFvF/g+WMteh1EDWtFn7uHdw7Tm8\nZI6JV1nQX9eizIdBjnXzBX3AUMYJWoJ6Q54yT2vCB8FzwW6/RVcxihLIAkbCltXK\n1LCBQEDFPjwJsT+9j5nCGoAv2nqb4DwUsxvKQVZhAoGBALlaymGkiraGDJKSJNkV\nrhilCyVNf9dupIhlWtrKJHNktcGljA8tRrSUp8cB1TRecMwuB+M0Y0bcJTWLdapj\nIHeOTJKLXFwoPU0Ep7kouPev617Hg57UOc07oyOynQM4obHSjHwSnLlq11WS7Dph\nHySvsfC/nTBECkq4BcpllxWt\n-----END PRIVATE KEY-----\n",
+  "client_email": "motofuria@script-motofuria.iam.gserviceaccount.com",
+  "client_id": "104357910287088927343",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/motofuria%40script-motofuria.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

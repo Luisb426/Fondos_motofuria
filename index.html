@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MotoFuria | Fondos Exclusivos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
+  <style>
+    /* --- ESTILOS ORIGINALES --- */
+    body {
+      font-family: 'Orbitron', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(135deg, #121212, #1f1f1f);
+      color: #e0e0e0;
+      text-align: center;
+      animation: fadeIn 2s ease;
+    }
+    h1, h2 {
+      color: #d4af37;
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
+    }
+    .logo {
+      width: 180px;
+      animation: pulse 2s infinite;
+      margin-bottom: 10px;
+    }
+    input, button {
+      padding: 12px;
+      margin: 10px;
+      font-size: 1em;
+      border: 1px solid #444;
+      border-radius: 8px;
+      background-color: #2a2a2a;
+      color: #fff;
+      width: 250px;
+    }
+    button {
+      background-color: #3483fa;
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:disabled {
+      background-color: #666;
+      cursor: not-allowed;
+    }
+    button:hover:enabled {
+      background-color: #296fd0;
+    }
+
+    /* --- ESTILO MEJORADO PARA LOS PAQUETES --- */
+    .paquetes {
+      text-align: left;
+      display: inline-block;
+      margin: 10px auto;
+      background-color: #1f1f1f;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #444;
+      box-shadow: 0 0 12px rgba(212,175,55,0.3);
+    }
+    .paquetes label {
+      display: block;
+      margin: 10px 0;
+      font-size: 1.05em;
+      padding: 8px;
+      border-radius: 8px;
+      transition: background 0.3s, transform 0.2s;
+      cursor: pointer;
+    }
+    .paquetes label:hover {
+      background-color: rgba(212, 175, 55, 0.1);
+      transform: scale(1.02);
+    }
+    .paquetes input[type="radio"] {
+      margin-right: 10px;
+      transform: scale(1.2);
+      accent-color: #d4af37;
+    }
+
+    progress {
+      width: 80%;
+      height: 30px;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    progress::-webkit-progress-bar {
+      background-color: #333;
+    }
+    progress::-webkit-progress-value {
+      background: linear-gradient(90deg, #d4af37, #c0c0c0);
+      transition: width 1s ease-in-out;
+    }
+    .fotos-premio img,.ganador img {
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+      border-radius: 10px;
+      width: 300px;
+      margin: 10px;
+    }
+    footer {
+      font-size: 0.9em;
+      color: #aaa;
+      margin-top: 30px;
+      padding: 10px;
+      background-color: #1a1a1a;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0;}
+      to { opacity: 1;}
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1);}
+      50% { transform: scale(1.05);}
+    }
+  </style>
+</head>
+<body>
+
+  <img src="logomotofuria.jpg" alt="MotoFuria" class="logo" />
+  <h1>🔥 Ruge con nosotros. Solo los verdaderos pilotos desbloquean el poder visual 🔥</h1>
+
+  <section class="dinamica">
+    <h2>¿Cómo funciona?</h2>
+    <p>🎯 Eliges cuántos paquetes de fondos comprar, pagas y automáticamente a tu correo llegará un fondo exclusivo por cada uno. Cada compra te da <strong>3 oportunidades</strong> para ganar. La dinámica se activa al llegar al <strong>80%</strong>.</p>
+    <p>💥 Valor por paquete de 3 fondos: <strong>$11,399 pesos colombianos</strong>. ⚡ Entre más paquetes compres, más oportunidades tienes de que la dinámica sea tuya.</p>
+  </section>
+
+  <section class="info-envio">
+    <h2>🛒 ¿Cómo recibes tu fondo?</h2>
+    <p>
+      💳 Pagas mediante <strong>Mercado Pago</strong> de forma segura.<br />
+      📧 Tras el pago recibirás automáticamente un fondo exclusivo y aleatorio en tu correo.<br />
+      📁 Las imágenes son privadas, únicas y no se muestran en la página.
+    </p>
+  </section>
+
+  <section class="progreso">
+    <label for="bar">Progreso hacia la dinámica:</label><br />
+    <progress id="bar" value="60" max="100"></progress>
+    <span id="porcentaje">60%</span>
+  </section>
+
+  <section class="premio">
+    <h2>🏆 Premio de la dinámica: Moto 200 NG</h2>
+    <div class="fotos-premio">
+      <img src="premio1.jpg" alt="Moto 200 NG lateral" />
+    </div>
+    <p>Una máquina con ADN de carreras, lista para rugir en tus manos.</p>
+  </section>
+
+  <section class="ganador">
+    <h2>🥇 Aquí va el ganador</h2>
+    <img src="ganador.jpg" alt="Ganador de la dinámica" />
+    <p>Nombre del piloto campeón</p>
+  </section>
+
+  <section class="comprar">
+    <h2>Compra tus paquetes de fondos exclusivos 🖼️</h2>
+    <form id="formulario">
+      <input type="email" id="correo" placeholder="Correo electrónico" required /><br />
+      <input type="tel" id="telefono" placeholder="Número telefónico" required /><br />
+
+      <label>Selecciona cantidad de paquetes:</label><br />
+      <div class="paquetes">
+        <label><input type="radio" name="paquete" value="1" checked /> 1 paquete (3 fondos) - $11,399</label>
+        <label><input type="radio" name="paquete" value="2" /> 2 paquetes (6 fondos) - $22,798</label>
+        <label><input type="radio" name="paquete" value="3" /> 3 paquetes (9 fondos) - $34,197</label>
+        <label><input type="radio" name="paquete" value="6" /> 6 paquetes (18 fondos) - $68,394</label>
+        <label><input type="radio" name="paquete" value="9" /> 9 paquetes (27 fondos) - $102,591</label>
+      </div>
+
+      <p id="resumenCompra">🧾 Total: $11,399 COP por 3 fondos</p>
+
+      <button id="botonPago" type="button" disabled>
+        Pagar con Mercado Pago (PSE / Tarjeta)
+      </button>
+    </form>
+  </section>
+
+  <footer>
+    <h3>Términos y condiciones</h3>
+    <p>
+      Las imágenes se entregan de forma privada por correo.<br />
+      La dinámica se activa al alcanzar el 80%.<br />
+      El ganador se publicará en esta página.
+    </p>
+  </footer>
+
+  <script>
+    const correo = document.getElementById("correo");
+    const telefono = document.getElementById("telefono");
+    const botonPago = document.getElementById("botonPago");
+    const resumenCompra = document.getElementById("resumenCompra");
+    const radios = document.querySelectorAll('input[name="paquete"]');
+
+    const links = {
+      1: "https://mpago.li/2CQLU4b",
+      2: "https://mpago.li/2NgT5Jd",
+      3: "https://mpago.li/1rm1Jou",
+      6: "https://mpago.li/26QYjaa",
+      9: "https://mpago.li/1f4Z2mQ"
+    };
+
+    function actualizarResumen() {
+      const seleccionado = document.querySelector('input[name="paquete"]:checked');
+      const paquetes = parseInt(seleccionado.value);
+      const total = paquetes * 11399;
+      const fondos = paquetes * 3;
+      resumenCompra.textContent = `🧾 Total: $${total.toLocaleString()} COP por ${fondos} fondos`;
+    }
+
+    function validarFormulario() {
+      botonPago.disabled = !(correo.value.trim() && telefono.value.trim());
+    }
+
+    // 🚀 Aquí mejoramos la parte de registro antes del pago
+    botonPago.addEventListener("click", async () => {
+      const seleccionado = document.querySelector('input[name="paquete"]:checked');
+      const paquetes = parseInt(seleccionado.value);
+
+      const id_pago = "pago_" + Date.now(); // identificador temporal
+
+      try {
+        const resp = await fetch("/.netlify/functions/enviarFondos", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: correo.value,
+            celular: telefono.value,
+            cantidad: paquetes,
+            id_pago
+          })
+        });
+
+        const data = await resp.json();
+        console.log("📌 Respuesta backend:", data);
+
+        // Abre el link de pago después de guardar en Sheets
+        window.open(links[paquetes], "_blank");
+      } catch (err) {
+        console.error("❌ Error al registrar compra:", err);
+        alert("Hubo un problema registrando tu compra. Intenta de nuevo.");
+      }
+    });
+
+    radios.forEach(radio => radio.addEventListener("change", actualizarResumen));
+    correo.addEventListener("input", validarFormulario);
+    telefono.addEventListener("input", validarFormulario);
+
+    actualizarResumen();
+  </script>
+
+</body>
+</html>
