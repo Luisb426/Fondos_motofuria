@@ -188,69 +188,89 @@
     </p>
   </footer>
 
-  <script>
-    const correo = document.getElementById("correo");
-    const telefono = document.getElementById("telefono");
-    const botonPago = document.getElementById("botonPago");
-    const resumenCompra = document.getElementById("resumenCompra");
-    const radios = document.querySelectorAll('input[name="paquete"]');
+ <script src="https://sdk.mercadopago.com/js/v2"></script>
+<script>
+  const mp = new MercadoPago("APP_USR-a2f3d810-9dbd-44ad-b35d-ce3b5d3a0d62", {
+    locale: "es-CO"
+  });
 
-    const links = {
-      1: "https://mpago.li/2CQLU4b",
-      2: "https://mpago.li/2NgT5Jd",
-      3: "https://mpago.li/1rm1Jou",
-      6: "https://mpago.li/26QYjaa",
-      9: "https://mpago.li/1f4Z2mQ"
-    };
+  const correo = document.getElementById("correo");
+  const telefono = document.getElementById("telefono");
+  const botonPago = document.getElementById("botonPago");
+  const resumenCompra = document.getElementById("resumenCompra");
+  const radios = document.querySelectorAll('input[name="paquete"]');
 
-    function actualizarResumen() {
-      const seleccionado = document.querySelector('input[name="paquete"]:checked');
-      const paquetes = parseInt(seleccionado.value);
-      const total = paquetes * 11399;
-      const fondos = paquetes * 3;
-      resumenCompra.textContent = `🧾 Total: $${total.toLocaleString()} COP por ${fondos} fondos`;
+  const links = {
+    1: "https://mpago.li/2CQLU4b",
+    2: "https://mpago.li/2NgT5Jd",
+    3: "https://mpago.li/1rm1Jou",
+    6: "https://mpago.li/26QYjaa",
+    9: "https://mpago.li/1f4Z2mQ"
+  };
+
+  function actualizarResumen() {
+    const seleccionado = document.querySelector('input[name="paquete"]:checked');
+    const paquetes = parseInt(seleccionado.value);
+    const total = paquetes * 11399;
+    const fondos = paquetes * 3;
+    resumenCompra.textContent = `🧾 Total: $${total.toLocaleString()} COP por ${fondos} fondos`;
+  }
+
+  function validarFormulario() {
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo.value.trim());
+    const telefonoValido = /^[0-9]{7,15}$/.test(telefono.value.trim());
+    botonPago.disabled = !(emailValido && telefonoValido);
+  }
+
+  botonPago.addEventListener("click", async () => {
+    const seleccionado = document.querySelector('input[name="paquete"]:checked');
+    const paquetes = parseInt(seleccionado.value);
+    const email = correo.value.trim();
+    const celular = telefono.value.trim();
+
+    const emailValido = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    const telefonoValido = /^[0-9]{7,15}$/.test(celular);
+
+    if (!emailValido || !telefonoValido) {
+      alert("Por favor ingresa un correo y teléfono válidos.");
+      return;
     }
 
-    function validarFormulario() {
-      botonPago.disabled = !(correo.value.trim() && telefono.value.trim());
-    }
+    const id_pago = "pago_" + Date.now();
 
-    // 🚀 Aquí mejoramos la parte de registro antes del pago
-    botonPago.addEventListener("click", async () => {
-      const seleccionado = document.querySelector('input[name="paquete"]:checked');
-      const paquetes = parseInt(seleccionado.value);
+    try {
+      const resp = await fetch("/.netlify/functions/enviarFondos", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          celular,
+          cantidad: paquetes,
+          id_pago
+        })
+      });
 
-      const id_pago = "pago_" + Date.now(); // identificador temporal
+      const data = await resp.json();
+      console.log("📌 Respuesta backend:", data);
 
-      try {
-        const resp = await fetch("/.netlify/functions/enviarFondos", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email: correo.value,
-            celular: telefono.value,
-            cantidad: paquetes,
-            id_pago
-          })
-        });
-
-        const data = await resp.json();
-        console.log("📌 Respuesta backend:", data);
-
-        // Abre el link de pago después de guardar en Sheets
-        window.open(links[paquetes], "_blank");
-      } catch (err) {
-        console.error("❌ Error al registrar compra:", err);
-        alert("Hubo un problema registrando tu compra. Intenta de nuevo.");
+      if (data.error) {
+        alert("Error al registrar la compra: " + data.error);
+        return;
       }
-    });
 
-    radios.forEach(radio => radio.addEventListener("change", actualizarResumen));
-    correo.addEventListener("input", validarFormulario);
-    telefono.addEventListener("input", validarFormulario);
+      window.open(links[paquetes], "_blank");
+    } catch (err) {
+      console.error("❌ Error al registrar compra:", err);
+      alert("Hubo un problema registrando tu compra. Intenta de nuevo.");
+    }
+  });
 
-    actualizarResumen();
-  </script>
+  radios.forEach(radio => radio.addEventListener("change", actualizarResumen));
+  correo.addEventListener("input", validarFormulario);
+  telefono.addEventListener("input", validarFormulario);
+
+  actualizarResumen();
+</script>
 
 </body>
 </html>
