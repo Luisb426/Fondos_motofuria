@@ -18,10 +18,16 @@ exports.handler = async function(event) {
   try {
     const { email, celular, cantidad, id_pago } = JSON.parse(event.body);
 
+    // Selección dinámica del Access Token según entorno
+    const accessToken =
+      process.env.NODE_ENV === "production"
+        ? process.env.MP_TOKEN_PROD
+        : process.env.MP_TOKEN_SANDBOX;
+
     // Verificar estado del pago en Mercado Pago
     const respuesta = await axios.get(`https://api.mercadopago.com/v1/payments/${id_pago}`, {
       headers: {
-        Authorization: `Bearer ${process.env.MP_TOKEN}`
+        Authorization: `Bearer ${accessToken}`
       }
     });
 
