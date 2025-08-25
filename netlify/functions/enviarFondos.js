@@ -2,7 +2,7 @@ const { google } = require('googleapis');
 const nodemailer = require('nodemailer');
 const axios = require('axios');
 
-// Validación del monto pagado
+// Función para validar cantidad según monto pagado
 function obtenerCantidadPorMonto(monto) {
   const paquetes = {
     11399: 3,
@@ -16,22 +16,21 @@ function obtenerCantidadPorMonto(monto) {
 
 exports.handler = async function(event) {
   try {
-    const { email, celular, cantidad, id_pago } = JSON.parse(event.body);
+    const { celular, cantidad, id_pago } = JSON.parse(event.body);
 
-    // Selección dinámica del Access Token según entorno
+    // Token de Mercado Pago según entorno
     const accessToken =
       process.env.NODE_ENV === "production"
         ? process.env.MP_TOKEN_PROD
         : process.env.MP_TOKEN_SANDBOX;
 
-    // Verificar estado del pago en Mercado Pago
+    // 🔍 Verificar el pago en Mercado Pago
     const respuesta = await axios.get(`https://api.mercadopago.com/v1/payments/${id_pago}`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      }
+      headers: { Authorization: `Bearer ${accessToken}` }
     });
 
     const pago = respuesta.data;
+
     if (pago.status !== 'approved') {
       return {
         statusCode: 200,
@@ -39,7 +38,12 @@ exports.handler = async function(event) {
       };
     }
 
-    // Validar monto pagado vs cantidad solicitada
+    // 📩 Datos del comprador desde Mercado Pago
+    const email = pago.payer.email;
+    const nombre = pago.payer.first_name || "";
+    const apellido = pago.payer.last_name || "";
+
+    // ✅ Validar monto pagado vs cantidad
     const cantidadEsperada = obtenerCantidadPorMonto(pago.transaction_amount);
     if (!cantidadEsperada) {
       return {
@@ -55,7 +59,7 @@ exports.handler = async function(event) {
       };
     }
 
-    // Conexión con Google Sheets
+    // 🔗 Conexión con Google Sheets
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
@@ -63,12 +67,13 @@ exports.handler = async function(event) {
       },
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
     });
+
     const sheets = google.sheets({ version: 'v4', auth });
 
     const spreadsheetId = '17xDKkY3jnkMjBgePAiUBGmHgv4i6IMxU7iWFCiyor1k';
     const sheetName = 'fondos';
 
-    // Leer datos
+    // 📖 Leer los datos de la hoja
     const { data } = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: `${sheetName}!A2:H`,
@@ -83,22 +88,22 @@ exports.handler = async function(event) {
       return { statusCode: 400, body: 'No hay suficientes fondos disponibles' };
     }
 
-    // Selección aleatoria
+    // 🎲 Selección aleatoria
     const seleccionados = [];
     while (seleccionados.length < cantidad) {
       const i = Math.floor(Math.random() * disponibles.length);
       seleccionados.push(disponibles.splice(i, 1)[0]);
     }
 
-    // Marcar como vendidos y registrar datos del cliente
+    // ✍️ Actualizar en la hoja como vendidos y registrar comprador
     for (const fondo of seleccionados) {
       const fila = fondo.index + 2;
 
       await sheets.spreadsheets.values.update({
         spreadsheetId,
-        range: `${sheetName}!B${fila}:D${fila}`, // Correo, Celular, ID de pago
+        range: `${sheetName}!B${fila}:E${fila}`, // Correo, Celular, ID de pago, Nombre y Apellido
         valueInputOption: 'USER_ENTERED',
-        requestBody: { values: [[email, celular, id_pago]] },
+        requestBody: { values: [[email, celular, id_pago, `${nombre} ${apellido}`]] },
       });
 
       await sheets.spreadsheets.values.update({
@@ -109,32 +114,28 @@ exports.handler = async function(event) {
       });
     }
 
-    // Crear mensaje con enlaces
+    // 🔗 Construir enlaces para el correo
     const enlaces = seleccionados.map(f => f.row[7]).join('\n👉 '); // Columna H = Enlace
 
     const mensaje = `
-Hola piloto Motofuria,
+Hola ${nombre} ${apellido},
 
-🎉 ¡Gracias por tu compra de fondos digitales!
+🎉 ¡Gracias por tu compra de fondos digitales en Motofuria!
 
-Aquí tienes los fondos que adquiriste. Puedes descargarlos directamente desde el siguiente enlace:
+Aquí tienes los fondos que adquiriste. Descárgalos en los siguientes enlaces:
 👉 ${enlaces}
 
-Ahora estás invitado a unirte a nuestro canal de Telegram, donde recibirás soporte personalizado y toda la información sobre el proceso:
+📢 Además, únete a nuestro canal de Telegram para soporte y novedades:
 👉 https://t.me/+1rRO36zXs0RjMmQ5
 
-🙏 Te agradecemos por ser parte de esta dinámica. ¡Deseamos que seas el gran ganador!
+🙏 Gracias por participar en nuestra dinámica. ¡Recuerda que entre más compres, más cerca estás de ganar el premio!
 
-Además, te invitamos a compartir nuestra página con tus contactos:
 👉 motofuria-fondos.netlify.app
 
-📢 La persona que más veces comparta nuestra página puede ganarse un increíble premio. ¡No te lo pierdas!
-
-Un abrazo creativo,  
-El equipo de Motofuria 🚀
+Un abrazo del equipo Motofuria 🚀
 `;
 
-    // Enviar correo
+    // 📧 Configuración de correo
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -146,7 +147,7 @@ El equipo de Motofuria 🚀
     await transporter.sendMail({
       from: 'Motofuria <motofuria@correo.com>',
       to: email,
-      subject: '🎉 ¡Tus fondos digitales están listos!',
+      subject: '🎉 Tus fondos digitales de Motofuria',
       text: mensaje,
     });
 
