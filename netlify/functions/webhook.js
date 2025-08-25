@@ -14,18 +14,28 @@ function obtenerCantidadPorMonto(monto) {
   return paquetes[monto] || null;
 }
 
-exports.handler = async function(event) {
+exports.handler = async function (event) {
   try {
-    const body = JSON.parse(event.body);
-    const id_pago = body.data?.id;
+    // ✅ Evita error si el body viene vacío
+    if (!event.body) {
+      return { statusCode: 400, body: "Sin body recibido" };
+    }
 
+    let body;
+    try {
+      body = JSON.parse(event.body);
+    } catch (err) {
+      return { statusCode: 400, body: "Body no es JSON válido" };
+    }
+
+    const id_pago = body.data?.id;
     if (!id_pago) {
       return { statusCode: 400, body: "ID de pago no recibido" };
     }
 
     const accessToken = process.env.MP_TOKEN_PROD;
 
-    // ✅ Corrección: template string con comillas invertidas
+    // ✅ Obtener pago de Mercado Pago
     const respuesta = await axios.get(
       `https://api.mercadopago.com/v1/payments/${id_pago}`,
       { headers: { Authorization: `Bearer ${accessToken}` } }
@@ -36,20 +46,21 @@ exports.handler = async function(event) {
       return { statusCode: 200, body: `Pago en estado: ${pago.status}` };
     }
 
-    const cantidad = obtenerCantidadPorMonto(pago.transaction_amount);
+    const cantidad = obtenerCantidadPorMonto(Math.round(pago.transaction_amount));
     if (!cantidad) {
       return { statusCode: 400, body: `Monto no válido: ${pago.transaction_amount}` };
     }
 
-    const email = pago.payer.email;
-    const nombre = pago.payer.first_name || "";
-    const apellido = pago.payer.last_name || "";
-    const celular = pago.payer.identification?.number || "no-reg";
+    const email = pago.payer?.email || "sin-email";
+    const nombre = pago.payer?.first_name || "";
+    const apellido = pago.payer?.last_name || "";
+    const celular = pago.payer?.identification?.number || "no-reg";
 
     // ✅ Autenticación con Google Sheets
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        // Reemplazo de saltos de línea para que no explote
         private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
       },
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
@@ -59,7 +70,7 @@ exports.handler = async function(event) {
     const spreadsheetId = '17xDKkY3jnkMjBgePAiUBGmHgv4i6IMxU7iWFCiyor1k';
     const sheetName = 'fondos';
 
-    // ✅ Corrección: template string
+    // ✅ Obtener valores
     const { data } = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: `${sheetName}!A2:H`,
@@ -81,7 +92,7 @@ exports.handler = async function(event) {
       seleccionados.push(disponibles.splice(i, 1)[0]);
     }
 
-    // Actualizar Google Sheets con los fondos vendidos
+    // ✅ Actualizar Google Sheets
     for (const fondo of seleccionados) {
       const fila = fondo.index + 2;
 
@@ -118,7 +129,7 @@ Hola ${nombre} ${apellido},
 Un abrazo del equipo Motofuria 🚀
 `;
 
-    // Enviar correo
+    // ✅ Enviar correo
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -140,6 +151,7 @@ Un abrazo del equipo Motofuria 🚀
     };
 
   } catch (error) {
+    console.error("❌ Error en webhook:", error);
     return {
       statusCode: 500,
       body: JSON.stringify({ status: "error", mensaje: error.message }),
