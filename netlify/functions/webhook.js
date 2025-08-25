@@ -14,53 +14,57 @@ function obtenerCantidadPorMonto(monto) {
   return paquetes[monto] || null;
 }
 
-exports.handler = async function (event) {
+exports.handler = async function(event) {
   try {
-    // ✅ Evita error si el body viene vacío
     if (!event.body) {
-      return { statusCode: 400, body: "Sin body recibido" };
+      return { statusCode: 200, body: "Webhook recibido sin body" };
     }
 
-    let body;
-    try {
-      body = JSON.parse(event.body);
-    } catch (err) {
-      return { statusCode: 400, body: "Body no es JSON válido" };
-    }
-
+    const body = JSON.parse(event.body);
     const id_pago = body.data?.id;
+
+    // Si no viene id_pago
     if (!id_pago) {
-      return { statusCode: 400, body: "ID de pago no recibido" };
+      return { statusCode: 200, body: "Webhook recibido sin id_pago" };
+    }
+
+    // Si es un webhook de prueba (ejemplo de Mercado Pago)
+    if (id_pago === "123456") {
+      return { statusCode: 200, body: "Webhook de prueba recibido correctamente ✅" };
     }
 
     const accessToken = process.env.MP_TOKEN_PROD;
 
-    // ✅ Obtener pago de Mercado Pago
-    const respuesta = await axios.get(
-      `https://api.mercadopago.com/v1/payments/${id_pago}`,
-      { headers: { Authorization: `Bearer ${accessToken}` } }
-    );
+    // Llamar a la API de Mercado Pago
+    let pago;
+    try {
+      const respuesta = await axios.get(
+        `https://api.mercadopago.com/v1/payments/${id_pago}`,
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      pago = respuesta.data;
+    } catch (err) {
+      return { statusCode: 200, body: `No se encontró el pago con ID ${id_pago}` };
+    }
 
-    const pago = respuesta.data;
     if (pago.status !== 'approved') {
       return { statusCode: 200, body: `Pago en estado: ${pago.status}` };
     }
 
-    const cantidad = obtenerCantidadPorMonto(Math.round(pago.transaction_amount));
+    const cantidad = obtenerCantidadPorMonto(pago.transaction_amount);
     if (!cantidad) {
-      return { statusCode: 400, body: `Monto no válido: ${pago.transaction_amount}` };
+      return { statusCode: 200, body: `Monto no válido: ${pago.transaction_amount}` };
     }
 
-    const email = pago.payer?.email || "sin-email";
-    const nombre = pago.payer?.first_name || "";
-    const apellido = pago.payer?.last_name || "";
-    const celular = pago.payer?.identification?.number || "no-reg";
+    const email = pago.payer.email;
+    const nombre = pago.payer.first_name || "";
+    const apellido = pago.payer.last_name || "";
+    const celular = pago.payer.identification?.number || "no-reg";
 
-    // ✅ Autenticación con Google Sheets
+    // Autenticación con Google Sheets
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        // Reemplazo de saltos de línea para que no explote
         private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
       },
       scopes: ['https://www.googleapis.com/auth/spreadsheets'],
@@ -70,7 +74,6 @@ exports.handler = async function (event) {
     const spreadsheetId = '17xDKkY3jnkMjBgePAiUBGmHgv4i6IMxU7iWFCiyor1k';
     const sheetName = 'fondos';
 
-    // ✅ Obtener valores
     const { data } = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: `${sheetName}!A2:H`,
@@ -82,7 +85,7 @@ exports.handler = async function (event) {
       .filter(item => item.row[5] === 'disponible');
 
     if (disponibles.length < cantidad) {
-      return { statusCode: 400, body: 'No hay suficientes fondos disponibles' };
+      return { statusCode: 200, body: 'No hay suficientes fondos disponibles' };
     }
 
     // Seleccionar fondos aleatorios
@@ -92,7 +95,7 @@ exports.handler = async function (event) {
       seleccionados.push(disponibles.splice(i, 1)[0]);
     }
 
-    // ✅ Actualizar Google Sheets
+    // Actualizar Google Sheets
     for (const fondo of seleccionados) {
       const fila = fondo.index + 2;
 
@@ -111,7 +114,7 @@ exports.handler = async function (event) {
       });
     }
 
-    // Construir lista de enlaces
+    // Construir enlaces
     const enlaces = seleccionados.map(f => f.row[7]).join('\n👉 ');
 
     // Mensaje del correo
@@ -129,7 +132,7 @@ Hola ${nombre} ${apellido},
 Un abrazo del equipo Motofuria 🚀
 `;
 
-    // ✅ Enviar correo
+    // Enviar correo
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -151,10 +154,10 @@ Un abrazo del equipo Motofuria 🚀
     };
 
   } catch (error) {
-    console.error("❌ Error en webhook:", error);
     return {
-      statusCode: 500,
+      statusCode: 200, // ⚠️ siempre 200 para que Mercado Pago no corte el webhook
       body: JSON.stringify({ status: "error", mensaje: error.message }),
     };
   }
 };
+
