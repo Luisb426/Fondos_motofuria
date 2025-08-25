@@ -192,7 +192,7 @@
 <script>
   // 👇 Detectar entorno: localhost usa TEST, Netlify usa APP_USR
   const publicKey = window.location.hostname === "localhost"
-    
+     ? "TEST-c130e071-2f6c-4a27-b606-7fa88f10444e"
     : "APP_USR-a2f3d810-9dbd-44ad-b35d-ce3b5d3a0d62";
 
   const mp = new MercadoPago(publicKey, { locale: "es-CO" });
