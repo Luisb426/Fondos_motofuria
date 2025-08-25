@@ -6,7 +6,6 @@
   <title>MotoFuria | Fondos Exclusivos</title>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet" />
   <style>
-    /* --- ESTILOS ORIGINALES --- */
     body {
       font-family: 'Orbitron', sans-serif;
       margin: 0;
@@ -16,101 +15,27 @@
       text-align: center;
       animation: fadeIn 2s ease;
     }
-    h1, h2 {
-      color: #d4af37;
-      text-shadow: 0 0 8px rgba(212, 175, 55, 0.5);
-    }
-    .logo {
-      width: 180px;
-      animation: pulse 2s infinite;
-      margin-bottom: 10px;
-    }
+    h1, h2 { color: #d4af37; text-shadow: 0 0 8px rgba(212, 175, 55, 0.5); }
+    .logo { width: 180px; animation: pulse 2s infinite; margin-bottom: 10px; }
     input, button {
-      padding: 12px;
-      margin: 10px;
-      font-size: 1em;
-      border: 1px solid #444;
-      border-radius: 8px;
-      background-color: #2a2a2a;
-      color: #fff;
-      width: 250px;
+      padding: 12px; margin: 10px; font-size: 1em;
+      border: 1px solid #444; border-radius: 8px;
+      background-color: #2a2a2a; color: #fff; width: 250px;
     }
-    button {
-      background-color: #3483fa;
-      color: #fff;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-    button:disabled {
-      background-color: #666;
-      cursor: not-allowed;
-    }
-    button:hover:enabled {
-      background-color: #296fd0;
-    }
-    .paquetes {
-      text-align: left;
-      display: inline-block;
-      margin: 10px auto;
-      background-color: #1f1f1f;
-      padding: 20px;
-      border-radius: 12px;
-      border: 1px solid #444;
-      box-shadow: 0 0 12px rgba(212,175,55,0.3);
-    }
-    .paquetes label {
-      display: block;
-      margin: 10px 0;
-      font-size: 1.05em;
-      padding: 8px;
-      border-radius: 8px;
-      transition: background 0.3s, transform 0.2s;
-      cursor: pointer;
-    }
-    .paquetes label:hover {
-      background-color: rgba(212, 175, 55, 0.1);
-      transform: scale(1.02);
-    }
-    .paquetes input[type="radio"] {
-      margin-right: 10px;
-      transform: scale(1.2);
-      accent-color: #d4af37;
-    }
-    progress {
-      width: 80%;
-      height: 30px;
-      border-radius: 20px;
-      overflow: hidden;
-    }
-    progress::-webkit-progress-bar {
-      background-color: #333;
-    }
-    progress::-webkit-progress-value {
-      background: linear-gradient(90deg, #d4af37, #c0c0c0);
-      transition: width 1s ease-in-out;
-    }
-    .fotos-premio img,.ganador img {
-      box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
-      border-radius: 10px;
-      width: 300px;
-      margin: 10px;
-    }
-    footer {
-      font-size: 0.9em;
-      color: #aaa;
-      margin-top: 30px;
-      padding: 10px;
-      background-color: #1a1a1a;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0;}
-      to { opacity: 1;}
-    }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1);}
-      50% { transform: scale(1.05);}
-    }
+    button { background-color: #3483fa; color: #fff; font-weight: bold; cursor: pointer; transition: background 0.3s ease; }
+    button:disabled { background-color: #666; cursor: not-allowed; }
+    button:hover:enabled { background-color: #296fd0; }
+    .paquetes { text-align: left; display: inline-block; margin: 10px auto; background-color: #1f1f1f; padding: 20px; border-radius: 12px; border: 1px solid #444; box-shadow: 0 0 12px rgba(212,175,55,0.3); }
+    .paquetes label { display: block; margin: 10px 0; font-size: 1.05em; padding: 8px; border-radius: 8px; transition: background 0.3s, transform 0.2s; cursor: pointer; }
+    .paquetes label:hover { background-color: rgba(212, 175, 55, 0.1); transform: scale(1.02); }
+    .paquetes input[type="radio"] { margin-right: 10px; transform: scale(1.2); accent-color: #d4af37; }
+    progress { width: 80%; height: 30px; border-radius: 20px; overflow: hidden; }
+    progress::-webkit-progress-bar { background-color: #333; }
+    progress::-webkit-progress-value { background: linear-gradient(90deg, #d4af37, #c0c0c0); transition: width 1s ease-in-out; }
+    .fotos-premio img,.ganador img { box-shadow: 0 0 10px rgba(212, 175, 55, 0.6); border-radius: 10px; width: 300px; margin: 10px; }
+    footer { font-size: 0.9em; color: #aaa; margin-top: 30px; padding: 10px; background-color: #1a1a1a; }
+    @keyframes fadeIn { from { opacity: 0;} to { opacity: 1;} }
+    @keyframes pulse { 0%, 100% { transform: scale(1);} 50% { transform: scale(1.05);} }
   </style>
 </head>
 <body>
@@ -185,19 +110,13 @@
     </p>
   </footer>
 
- <script src="https://sdk.mercadopago.com/js/v2"></script>
 <script>
-  // 🔑 Solo producción
-  const publicKey = "APP_USR-a2f3d810-9dbd-44ad-b35d-ce3b5d3a0d62";
-  const mp = new MercadoPago(publicKey, { locale: "es-CO" });
-
   const correo = document.getElementById("correo");
   const telefono = document.getElementById("telefono");
   const botonPago = document.getElementById("botonPago");
   const resumenCompra = document.getElementById("resumenCompra");
   const radios = document.querySelectorAll('input[name="paquete"]');
 
-  // ✅ Solo links de producción
   const links = {
     1: "https://mpago.li/2CQLU4b",
     2: "https://mpago.li/2NgT5Jd",
@@ -234,13 +153,18 @@
       return;
     }
 
-    // 👉 Guardar datos en localStorage (opcional)
     localStorage.setItem("correo", email);
     localStorage.setItem("telefono", celular);
     localStorage.setItem("paquetes", paquetes);
 
-    // 👉 Ir directamente al link de pago
+    // Abrir Mercado Pago en nueva pestaña
     window.open(links[paquetes], "_blank");
+
+    // Mostrar mensaje de procesamiento en la pestaña actual
+    document.body.innerHTML = `
+      <h1>Procesando tu pago... ⏳</h1>
+      <p>Revisa tu correo electrónico. En caso de anomalías comunícate con el equipo de MotoFuria: <strong>motofuria264@gmail.com</strong></p>
+    `;
   });
 
   radios.forEach(radio => radio.addEventListener("change", actualizarResumen));
@@ -252,4 +176,3 @@
 
 </body>
 </html>
-
