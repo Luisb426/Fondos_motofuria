@@ -18,11 +18,8 @@ exports.handler = async function(event) {
   try {
     const { celular, cantidad, id_pago } = JSON.parse(event.body);
 
-    // Token de Mercado Pago según entorno
-    const accessToken =
-      process.env.NODE_ENV === "production"
-        ? process.env.MP_TOKEN_PROD
-        : process.env.MP_TOKEN_SANDBOX;
+    // 🔑 Token de Mercado Pago (SOLO PRODUCCIÓN)
+    const accessToken = process.env.MP_TOKEN_PROD;
 
     // 🔍 Verificar el pago en Mercado Pago
     const respuesta = await axios.get(`https://api.mercadopago.com/v1/payments/${id_pago}`, {
@@ -163,3 +160,4 @@ Un abrazo del equipo Motofuria 🚀
     };
   }
 };
+
